@@ -52,10 +52,13 @@ body::after {
   background-size: 40px 40px;
 }
 
+/* ─── CANVAS BACKGROUND ─────────────────── */
 #matrix-bg { position:fixed; inset:0; z-index:1; opacity:0.06; pointer-events:none; }
+
+/* ─── LAYOUT ─────────────────────────────── */
 #app { position:relative; z-index:2; }
 
-/* LOGIN */
+/* ─── LOGIN ──────────────────────────────── */
 #login-screen {
   min-height:100vh; display:flex; flex-direction:column;
   align-items:center; justify-content:center; padding:2rem;
@@ -69,6 +72,13 @@ body::after {
   padding:3rem 2.5rem;
   position:relative;
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  animation: fadeUp 0.8s ease;
+}
+.login-box::before {
+  content:'FORTALEZA DIGITAL v2.0';
+  position:absolute; top:-1px; left:50%; transform:translateX(-50%);
+  font-family:'Share Tech Mono'; font-size:9px; color:var(--red);
+  background:var(--bg); padding:0 8px; letter-spacing:3px;
 }
 
 .logo-circle {
@@ -76,80 +86,300 @@ body::after {
   border:2px solid var(--red);
   display:flex; align-items:center; justify-content:center;
   margin:0 auto 1.5rem;
-  box-shadow: 0 0 30px rgba(255,0,0,0.4);
+  box-shadow: 0 0 30px rgba(255,0,0,0.4), inset 0 0 20px rgba(255,0,0,0.1);
+  animation: pulse-red 2s ease-in-out infinite;
+}
+@keyframes pulse-red {
+  0%,100%{ box-shadow:0 0 20px rgba(255,0,0,0.3); }
+  50%{ box-shadow:0 0 50px rgba(255,0,0,0.6), 0 0 80px rgba(255,0,0,0.2); }
 }
 
-.login-title { font-family:'Orbitron'; font-size:1.4rem; font-weight:900; text-align:center; letter-spacing:4px; margin-bottom:0.3rem; text-transform:uppercase; }
+.login-title {
+  font-family:'Orbitron'; font-size:1.4rem; font-weight:900;
+  text-align:center; letter-spacing:4px; margin-bottom:0.3rem;
+  text-transform:uppercase;
+}
 .login-sub { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); text-align:center; letter-spacing:3px; margin-bottom:2rem; }
 
 .field-label { font-family:'Share Tech Mono'; font-size:9px; color:var(--red); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
 .field-input {
   width:100%; background:rgba(255,0,0,0.04); border:1px solid rgba(255,0,0,0.2);
   color:var(--text); font-family:'Share Tech Mono'; font-size:13px;
-  padding:12px 16px; outline:none;
+  padding:12px 16px; outline:none; transition:all 0.3s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
+.field-input:focus { border-color:var(--red); box-shadow:0 0 20px rgba(255,0,0,0.2); }
+.field-input::placeholder { color:var(--muted); }
 
 .btn-primary {
   width:100%; padding:14px;
   background: linear-gradient(135deg, var(--red-dark), var(--red));
   color:#fff; font-family:'Orbitron'; font-size:11px; font-weight:700;
   letter-spacing:3px; text-transform:uppercase; border:none; cursor:pointer;
-  margin-top:1.5rem;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  transition:all 0.3s; margin-top:1.5rem;
 }
+.btn-primary:hover { filter:brightness(1.2); box-shadow:0 8px 30px rgba(255,0,0,0.4); transform:translateY(-2px); }
 
-/* MAIN APP */
+.hint-text { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); text-align:center; margin-top:1rem; }
+.hint-text span { color:var(--red); }
+
+/* ─── MAIN APP ───────────────────────────── */
 #main-app { display:none; }
+
+/* NAV */
 nav {
   position:sticky; top:0; z-index:100;
   background:rgba(4,4,4,0.95); backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:60px;
+  padding:0 2rem;
+  display:flex; align-items:center; justify-content:space-between;
+  height:60px;
 }
 .nav-brand { font-family:'Orbitron'; font-size:1rem; font-weight:900; letter-spacing:3px; }
 .nav-brand span { color:var(--red); }
-.nav-status { font-family:'Share Tech Mono'; font-size:10px; color:var(--green); display:flex; align-items:center; gap:6px; }
+.nav-status {
+  display:flex; align-items:center; gap:6px;
+  font-family:'Share Tech Mono'; font-size:10px; color:var(--green);
+  background:rgba(0,255,136,0.06); border:1px solid rgba(0,255,136,0.2);
+  padding:4px 12px; letter-spacing:2px;
+}
+.dot-green { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-.tabs { display:flex; background:var(--bg2); border-bottom:1px solid var(--border); padding:0 2rem; overflow-x:auto; }
-.tab { padding:14px 20px; cursor:pointer; font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); text-transform:uppercase; border-bottom:2px solid transparent; }
+.nav-actions { display:flex; gap:12px; align-items:center; }
+.nav-btn {
+  background:none; border:1px solid var(--border); color:var(--muted);
+  font-family:'Share Tech Mono'; font-size:9px; letter-spacing:2px;
+  padding:5px 12px; cursor:pointer; transition:all 0.3s; text-transform:uppercase;
+}
+.nav-btn:hover { border-color:var(--red); color:var(--red); }
+
+/* TABS */
+.tabs {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  background:var(--bg2); padding:0 2rem; overflow-x:auto;
+}
+.tab {
+  font-family:'Share Tech Mono'; font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  padding:14px 20px; cursor:pointer; color:var(--muted);
+  border-bottom:2px solid transparent; white-space:nowrap;
+  transition:all 0.3s; display:flex; align-items:center; gap:8px;
+}
+.tab:hover { color:var(--text); }
 .tab.active { color:var(--red); border-bottom-color:var(--red); }
 
-.panel { display:none; padding:2rem; }
+/* PANELS */
+.panel { display:none; padding:2rem; animation:fadeUp 0.4s ease; }
 .panel.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-.card { background:var(--bg2); border:1px solid var(--border); padding:1.5rem; margin-bottom:1.5rem; position:relative; }
-.card-title { font-family:'Share Tech Mono'; font-size:9px; color:var(--red); letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+/* CARDS */
+.card {
+  background:var(--bg2); border:1px solid var(--border);
+  padding:1.5rem; position:relative;
+}
+.card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--red), transparent);
+}
+.card-title {
+  font-family:'Share Tech Mono'; font-size:9px; color:var(--red);
+  letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem;
+  display:flex; align-items:center; gap:8px;
+}
+.card-title i { font-size:11px; }
 
-.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+/* GRID LAYOUTS */
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+.grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; }
 .grid-main { display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; }
 
-.stat-card { background:var(--bg2); border:1px solid var(--border); padding:1.2rem; border-bottom:2px solid var(--red); }
-.stat-label { font-family:'Share Tech Mono'; font-size:9px; color:var(--muted); }
-.stat-value { font-family:'Orbitron'; font-size:1.5rem; color:var(--text); }
+/* STAT CARDS */
+.stat-card {
+  background:var(--bg2); border:1px solid var(--border);
+  padding:1.2rem 1.5rem; position:relative; overflow:hidden;
+}
+.stat-card::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:var(--accent, var(--red));
+}
+.stat-label { font-family:'Share Tech Mono'; font-size:9px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+.stat-value { font-family:'Orbitron'; font-size:1.6rem; font-weight:700; line-height:1; }
+.stat-change { font-family:'Share Tech Mono'; font-size:9px; margin-top:4px; }
+.up { color:var(--green); } .down { color:var(--red); } .neutral { color:var(--yellow); }
 
-/* TERMINAL & CHAT */
-.terminal, .chat-area {
+/* THREAT FEED */
+.threat-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.04);
+  font-family:'Share Tech Mono'; font-size:10px;
+  transition:background 0.2s;
+}
+.threat-item:hover { background:rgba(255,0,0,0.04); }
+.threat-badge {
+  font-size:8px; padding:2px 8px; letter-spacing:1px; font-weight:700;
+  flex-shrink:0;
+}
+.badge-crit { background:rgba(255,0,0,0.2); color:#ff4444; border:1px solid rgba(255,0,0,0.4); }
+.badge-high { background:rgba(255,120,0,0.2); color:#ff7800; border:1px solid rgba(255,120,0,0.4); }
+.badge-med  { background:rgba(255,200,0,0.2); color:#ffcc00; border:1px solid rgba(255,200,0,0.4); }
+.badge-low  { background:rgba(0,255,136,0.15); color:#00ff88; border:1px solid rgba(0,255,136,0.3); }
+.threat-desc { flex:1; color:var(--text); }
+.threat-time { color:var(--muted); flex-shrink:0; }
+
+/* BLOCKCHAIN BLOCKS */
+.block-chain { display:flex; flex-direction:column; gap:0; }
+.chain-block {
+  background:rgba(255,0,0,0.03); border:1px solid var(--border);
+  padding:14px; font-family:'Share Tech Mono'; font-size:10px;
+  position:relative; transition:all 0.3s;
+}
+.chain-block:hover { border-color:rgba(255,0,0,0.4); background:rgba(255,0,0,0.06); }
+.chain-block + .chain-block::before {
+  content:'│'; color:var(--red); position:absolute; top:-14px; left:50%;
+  transform:translateX(-50%); line-height:1;
+}
+.block-header { display:flex; justify-content:space-between; margin-bottom:8px; }
+.block-num { color:var(--red); font-weight:700; }
+.block-hash { color:var(--cyan); font-size:9px; }
+.block-data { color:var(--muted); font-size:9px; line-height:1.8; }
+.block-valid { color:var(--green); font-size:8px; letter-spacing:2px; }
+
+/* PROGRESS BARS */
+.progress-row { margin-bottom:12px; }
+.progress-label { display:flex; justify-content:space-between; font-family:'Share Tech Mono'; font-size:9px; color:var(--muted); margin-bottom:5px; }
+.progress-track { height:4px; background:rgba(255,255,255,0.06); position:relative; }
+.progress-fill { height:100%; background:linear-gradient(90deg, var(--red-dark), var(--red)); position:relative; transition:width 1s ease; }
+.progress-fill::after { content:''; position:absolute; right:0; top:-2px; width:8px; height:8px; background:var(--red); border-radius:50%; }
+
+/* TERMINAL */
+.terminal {
   background:#000; border:1px solid rgba(0,255,136,0.2);
   padding:1rem; font-family:'Share Tech Mono'; font-size:11px;
-  height:200px; overflow-y:auto; color:var(--green);
+  height:200px; overflow-y:auto; line-height:1.8; color:var(--green);
 }
-.chat-area { height:260px; border-color:var(--border); color:var(--text); font-family:'Rajdhani'; }
+.terminal::-webkit-scrollbar { width:3px; }
+.terminal::-webkit-scrollbar-thumb { background:var(--green); }
+.term-line { display:flex; gap:8px; }
+.term-prompt { color:var(--red); flex-shrink:0; }
+.term-cmd { color:var(--text); }
+.term-out { color:var(--green); padding-left:16px; }
+.term-warn { color:var(--yellow); padding-left:16px; }
+.term-err { color:#ff4444; padding-left:16px; }
 
+/* AI CHAT */
+.chat-area {
+  background:#000; border:1px solid var(--border);
+  padding:1rem; height:260px; overflow-y:auto; margin-bottom:1rem;
+  font-family:'Rajdhani'; font-size:13px; line-height:1.6;
+}
+.chat-area::-webkit-scrollbar { width:3px; }
+.chat-area::-webkit-scrollbar-thumb { background:var(--red); }
 .msg-ai { margin-bottom:12px; }
-.msg-label { font-size:8px; font-family:'Share Tech Mono'; margin-bottom:4px; }
+.msg-label { font-family:'Share Tech Mono'; font-size:8px; letter-spacing:2px; margin-bottom:4px; }
 .msg-label.ai { color:var(--red); }
 .msg-label.user { color:var(--cyan); }
-.msg-text { padding:8px; border-left:2px solid var(--red); background:rgba(255,0,0,0.05); }
+.msg-text { padding:10px 14px; border-left:2px solid; font-size:12px; }
+.msg-text.ai { background:rgba(255,0,0,0.05); border-color:var(--red); color:var(--text); }
+.msg-text.user { background:rgba(0,212,255,0.05); border-color:var(--cyan); color:var(--text); }
 
 .input-row { display:flex; gap:8px; }
-.chat-input { flex:1; background:#111; border:1px solid var(--border); color:#fff; padding:10px; font-family:'Share Tech Mono'; }
-.btn-send { background:var(--red); border:none; color:#fff; padding:0 20px; cursor:pointer; font-family:'Share Tech Mono'; }
+.chat-input {
+  flex:1; background:rgba(255,0,0,0.04); border:1px solid var(--border);
+  color:var(--text); font-family:'Share Tech Mono'; font-size:11px;
+  padding:10px 14px; outline:none; transition:all 0.3s;
+}
+.chat-input:focus { border-color:var(--red); }
+.btn-send {
+  background:var(--red); color:#fff; border:none; cursor:pointer;
+  font-family:'Share Tech Mono'; font-size:9px; letter-spacing:2px;
+  padding:0 20px; transition:all 0.3s; text-transform:uppercase;
+}
+.btn-send:hover { background:var(--red-dark); }
+.btn-send:disabled { opacity:0.4; cursor:not-allowed; }
 
-/* ATTACK MAP */
-.attack-map { background:#000; height:180px; position:relative; border:1px solid var(--border); overflow:hidden; margin-bottom:1rem; }
-.attack-node { position:absolute; width:10px; height:10px; border-radius:50%; border:2px solid var(--red); }
-.attack-line { position:absolute; height:1px; transform-origin:left center; }
-.map-label { position:absolute; font-family:'Share Tech Mono'; font-size:8px; }
+/* SCENARIO BUILDER */
+.scenario-select {
+  background:rgba(255,0,0,0.04); border:1px solid var(--border);
+  color:var(--text); font-family:'Share Tech Mono'; font-size:10px;
+  padding:10px 14px; outline:none; cursor:pointer; width:100%; margin-bottom:1rem;
+}
+.scenario-select option { background:#0a0a0a; }
 
+.attack-map {
+  background:#000; border:1px solid var(--border);
+  height:180px; position:relative; overflow:hidden; margin-bottom:1rem;
+}
+.attack-node {
+  position:absolute; width:10px; height:10px; border-radius:50%;
+  border:2px solid var(--red); animation:nodePulse 1.5s ease infinite;
+}
+@keyframes nodePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+.attack-line {
+  position:absolute; height:1px; background:linear-gradient(90deg, var(--red), transparent);
+  transform-origin:left center; opacity:0.4;
+}
+.map-label { position:absolute; font-family:'Share Tech Mono'; font-size:8px; color:var(--muted); }
+
+/* API MODAL */
+#api-modal {
+  display:none; position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,0.9); align-items:center; justify-content:center;
+  backdrop-filter:blur(4px);
+}
+#api-modal.show { display:flex; }
+.modal-box {
+  background:var(--bg2); border:1px solid var(--border); border-top:2px solid var(--red);
+  padding:2.5rem; max-width:420px; width:90%;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  animation:fadeUp 0.3s ease;
+}
+.modal-title { font-family:'Orbitron'; font-size:1rem; font-weight:900; letter-spacing:3px; margin-bottom:0.5rem; text-transform:uppercase; }
+.modal-sub { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); margin-bottom:1.5rem; line-height:1.8; }
+.modal-sub a { color:var(--red); text-decoration:none; }
+
+/* CHART BARS */
+.bar-chart { display:flex; align-items:flex-end; gap:6px; height:100px; padding-top:1rem; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar { width:100%; background:linear-gradient(180deg, var(--red), var(--red-dark)); min-height:4px; transition:height 1s ease; position:relative; }
+.bar:hover { filter:brightness(1.3); }
+.bar-val { font-family:'Share Tech Mono'; font-size:8px; color:var(--red); }
+.bar-lbl { font-family:'Share Tech Mono'; font-size:8px; color:var(--muted); text-align:center; }
+
+/* RISK METER */
+.risk-meter { position:relative; height:8px; background:rgba(255,255,255,0.06); margin:8px 0; overflow:hidden; }
+.risk-fill { height:100%; transition:width 1.5s ease; }
+.risk-high { background:linear-gradient(90deg, var(--red-dark), var(--red)); }
+.risk-med  { background:linear-gradient(90deg, #7a4000, #ff7800); }
+.risk-low  { background:linear-gradient(90deg, #005522, var(--green)); }
+
+/* BADGES */
+.tag {
+  display:inline-block; font-family:'Share Tech Mono'; font-size:8px;
+  padding:2px 8px; letter-spacing:1px; text-transform:uppercase;
+  border:1px solid; margin:2px;
+}
+.tag-red   { color:var(--red); border-color:rgba(255,0,0,0.3); background:rgba(255,0,0,0.08); }
+.tag-green { color:var(--green); border-color:rgba(0,255,136,0.3); background:rgba(0,255,136,0.06); }
+.tag-blue  { color:var(--cyan); border-color:rgba(0,212,255,0.3); background:rgba(0,212,255,0.06); }
+.tag-yellow{ color:var(--yellow); border-color:rgba(255,204,0,0.3); background:rgba(255,204,0,0.06); }
+
+/* SCROLLBARS */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--red-dark); }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  .grid-4 { grid-template-columns:repeat(2,1fr); }
+  .grid-3 { grid-template-columns:repeat(2,1fr); }
+  .grid-2,.grid-main { grid-template-columns:1fr; }
+}
+@media(max-width:500px) {
+  .grid-4,.grid-3 { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
@@ -157,192 +387,645 @@ nav {
 <canvas id="matrix-bg"></canvas>
 
 <div id="app">
-  <div id="login-screen">
-    <div class="login-box">
-      <div class="logo-circle"><i class="fas fa-shield-halved" style="color:var(--red);font-size:2rem;"></i></div>
-      <div class="login-title">Fortaleza <span style="color:var(--red)">Digital</span></div>
-      <div class="login-sub">SISTEMA OPERATIVO DE CIBERSEGURIDAD</div>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo-circle">
+      <i class="fas fa-shield-halved" style="color:var(--red);font-size:2rem;"></i>
+    </div>
+    <div class="login-title">Fortaleza <span style="color:var(--red)">Digital</span></div>
+    <div class="login-sub">PLATAFORMA DE CIBERSEGURIDAD & BLOCKCHAIN</div>
+    <div style="margin-bottom:1rem">
+      <div class="field-label">Llave Pública (ID)</div>
       <input type="text" class="field-input" id="did-input" placeholder="Ingresa 1234">
-      <button class="btn-primary" onclick="doLogin()">Acceder al Nodo</button>
+    </div>
+    <button class="btn-primary" onclick="doLogin()">
+      <i class="fas fa-lock-open" style="margin-right:8px"></i>Firmar con Llave Privada
+    </button>
+    <div class="hint-text">Demo: ingresa <span>1234</span> para acceder</div>
+  </div>
+</div>
+
+<div id="main-app">
+  <nav>
+    <div class="nav-brand">FORTALEZA <span>DIGITAL</span></div>
+    <div class="nav-status">
+      <div class="dot-green"></div>
+      NODO BLOCKCHAIN ACTIVO · DID: 0xBF9D2A
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="openApiModal()"><i class="fas fa-key"></i> API KEY</button>
+      <button class="nav-btn" onclick="doLogout()"><i class="fas fa-power-off"></i> SALIR</button>
+    </div>
+  </nav>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('dashboard',this)"><i class="fas fa-gauge-high"></i>Dashboard</div>
+    <div class="tab" onclick="switchTab('amenazas',this)"><i class="fas fa-bug"></i>Amenazas</div>
+    <div class="tab" onclick="switchTab('blockchain',this)"><i class="fas fa-link"></i>Blockchain</div>
+    <div class="tab" onclick="switchTab('simulacion',this)"><i class="fas fa-flask"></i>Simulación IA</div>
+    <div class="tab" onclick="switchTab('red',this)"><i class="fas fa-network-wired"></i>Red & Nodos</div>
+    <div class="tab" onclick="switchTab('reportes',this)"><i class="fas fa-chart-bar"></i>Reportes</div>
+  </div>
+
+  <div id="panel-dashboard" class="panel active">
+    <div class="grid-4">
+      <div class="stat-card" style="--accent:var(--red)">
+        <div class="stat-label">Amenazas Activas</div>
+        <div class="stat-value" style="color:var(--red)" id="s-threats">247</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +18 última hora</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--green)">
+        <div class="stat-label">Bloques Validados</div>
+        <div class="stat-value" style="color:var(--green)" id="s-blocks">14,892</div>
+        <div class="stat-change up"><i class="fas fa-check"></i> 100% consenso</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--yellow)">
+        <div class="stat-label">Índice de Riesgo</div>
+        <div class="stat-value" style="color:var(--yellow)" id="s-risk">73%</div>
+        <div class="stat-change neutral"><i class="fas fa-minus"></i> Alto</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--cyan)">
+        <div class="stat-label">Transacciones</div>
+        <div class="stat-value" style="color:var(--cyan)" id="s-tx">9,341</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +3.2%</div>
+      </div>
+    </div>
+
+    <div class="grid-main">
+      <div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-title"><i class="fas fa-satellite-dish"></i>Feed de Amenazas en Tiempo Real</div>
+          <div id="threat-feed">
+            <div class="threat-item">
+              <span class="threat-badge badge-crit">CRÍTICO</span>
+              <span class="threat-desc">Intento de SQL Injection — 192.168.44.21</span>
+              <span class="threat-time">00:04s</span>
+            </div>
+            <div class="threat-item">
+              <span class="threat-badge badge-high">ALTO</span>
+              <span class="threat-desc">Escaneo de puertos masivo — 10.0.0.55</span>
+              <span class="threat-time">00:12s</span>
+            </div>
+            <div class="threat-item">
+              <span class="threat-badge badge-high">ALTO</span>
+              <span class="threat-desc">Ataque brute-force SSH — 203.0.113.9</span>
+              <span class="threat-time">00:28s</span>
+            </div>
+            <div class="threat-item">
+              <span class="threat-badge badge-med">MEDIO</span>
+              <span class="threat-desc">Tráfico DNS anómalo detectado</span>
+              <span class="threat-time">00:47s</span>
+            </div>
+            <div class="threat-item">
+              <span class="threat-badge badge-low">BAJO</span>
+              <span class="threat-desc">Certificado SSL expirado — srv-api-01</span>
+              <span class="threat-time">01:02s</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fas fa-terminal"></i>Terminal del Sistema</div>
+          <div class="terminal" id="sys-terminal">
+            <div class="term-line"><span class="term-prompt">FD&gt;</span><span class="term-cmd">system.init --mode=secure</span></div>
+            <div class="term-out">✓ Módulo Blockchain conectado. Red: MainNet</div>
+            <div class="term-out">✓ IDS/IPS activo. Reglas cargadas: 4,892</div>
+            <div class="term-out">✓ Smart Contract validado: 0xBF9D2A</div>
+            <div class="term-line"><span class="term-prompt">FD&gt;</span><span class="term-cmd">threat.scan --live</span></div>
+            <div class="term-warn">⚠ 3 amenazas críticas en cola de análisis</div>
+            <div class="term-out">Escaneando vectores de ataque...</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-title"><i class="fas fa-heart-pulse"></i>Salud del Sistema</div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Firewall</span><span style="color:var(--green)">98%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:98%;background:linear-gradient(90deg,#005522,var(--green))"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Encriptación</span><span style="color:var(--green)">100%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#005522,var(--green))"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Consenso Blockchain</span><span style="color:var(--green)">94%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:94%;background:linear-gradient(90deg,#005522,var(--green))"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>CPU del Nodo</span><span style="color:var(--yellow)">67%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:67%;background:linear-gradient(90deg,#7a4000,var(--yellow))"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-label"><span>Vulnerabilidades</span><span style="color:var(--red)">42%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:42%"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fas fa-fingerprint"></i>Identidad DID</div>
+          <div style="font-family:'Share Tech Mono';font-size:9px;line-height:2.2;color:var(--muted)">
+            <div>HASH <span style="color:var(--cyan);float:right">0xBF...9D2A</span></div>
+            <div>RED <span style="color:var(--green);float:right">MAINNET</span></div>
+            <div>PROTOCOLO <span style="color:var(--text);float:right">DID:WEB:3.0</span></div>
+            <div>CONTRATO <span style="color:var(--green);float:right">VALIDADO ✓</span></div>
+            <div>NODOS PEER <span style="color:var(--text);float:right">12 ACTIVOS</span></div>
+            <div>ÚLTIMO TX <span style="color:var(--text);float:right">2m ago</span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="main-app">
-    <nav>
-      <div class="nav-brand">FORTALEZA <span>DIGITAL</span></div>
-      <div class="nav-status"><i class="fas fa-circle" style="font-size:6px"></i> NODO ACTIVO: 0xBF9D2A</div>
-      <button class="nav-btn" onclick="location.reload()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:4px 10px;cursor:pointer">LOGOUT</button>
-    </nav>
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('dashboard',this)">Dashboard</div>
-      <div class="tab" onclick="switchTab('simulacion',this)">Simulación IA</div>
+  <div id="panel-amenazas" class="panel">
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="stat-card" style="--accent:var(--red)">
+        <div class="stat-label">Phishing Detectado</div>
+        <div class="stat-value" style="color:var(--red)">89</div>
+        <div class="stat-change up">+12 esta semana</div>
+      </div>
+      <div class="stat-card" style="--accent:#ff7800">
+        <div class="stat-label">Malware Bloqueado</div>
+        <div class="stat-value" style="color:#ff7800">134</div>
+        <div class="stat-change neutral">Ransomware: 23</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--yellow)">
+        <div class="stat-label">Intentos DDoS</div>
+        <div class="stat-value" style="color:var(--yellow)">24</div>
+        <div class="stat-change down">Mitigados: 21</div>
+      </div>
     </div>
 
-    <div id="panel-dashboard" class="panel active">
-      <div class="grid-4" style="margin-bottom:1.5rem">
-        <div class="stat-card"><div class="stat-label">Amenazas</div><div class="stat-value" id="s-threats">247</div></div>
-        <div class="stat-card"><div class="stat-label">Bloques</div><div class="stat-value">14,892</div></div>
-        <div class="stat-card" style="border-color:var(--yellow)"><div class="stat-label">Riesgo</div><div class="stat-value" style="color:var(--yellow)">73%</div></div>
-        <div class="stat-card" style="border-color:var(--cyan)"><div class="stat-label">Uptime</div><div class="stat-value" style="color:var(--cyan)">99.9%</div></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-chart-area"></i>Vectores de Ataque — Esta Semana</div>
+        <div class="bar-chart" id="attack-bars">
+          <div class="bar-col"><div class="bar-val">89</div><div class="bar" style="height:89px" title="Phishing"></div><div class="bar-lbl">Phishing</div></div>
+          <div class="bar-col"><div class="bar-val">67</div><div class="bar" style="height:67px" title="Brute Force"></div><div class="bar-lbl">Brute Force</div></div>
+          <div class="bar-col"><div class="bar-val">45</div><div class="bar" style="height:45px;background:linear-gradient(180deg,#ff7800,#7a4000)" title="Malware"></div><div class="bar-lbl">Malware</div></div>
+          <div class="bar-col"><div class="bar-val">38</div><div class="bar" style="height:38px;background:linear-gradient(180deg,var(--yellow),#7a6000)" title="SQL Inj"></div><div class="bar-lbl">SQLi</div></div>
+          <div class="bar-col"><div class="bar-val">24</div><div class="bar" style="height:24px;background:linear-gradient(180deg,var(--cyan),#004455)" title="DDoS"></div><div class="bar-lbl">DDoS</div></div>
+          <div class="bar-col"><div class="bar-val">19</div><div class="bar" style="height:19px;background:linear-gradient(180deg,#aa00ff,#330055)" title="Zero-day"></div><div class="bar-lbl">0-day</div></div>
+          <div class="bar-col"><div class="bar-val">11</div><div class="bar" style="height:11px;background:linear-gradient(180deg,var(--green),#004422)" title="MitM"></div><div class="bar-lbl">MitM</div></div>
+        </div>
       </div>
 
-      <div class="grid-main">
-        <div class="card">
-          <div class="card-title">Terminal de Eventos</div>
-          <div class="terminal" id="sys-terminal"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Estado de Red</div>
-          <div style="font-family:'Share Tech Mono'; font-size:11px; line-height:2">
-            Blockchain: <span style="color:var(--green)">Online</span><br>
-            Nodos: 12 activos<br>
-            Latencia: 24ms<br>
-            Encriptación: AES-256
+      <div class="card">
+        <div class="card-title"><i class="fas fa-skull-crossbones"></i>Top Amenazas Activas</div>
+        <div style="font-family:'Share Tech Mono';font-size:10px;line-height:1">
+          <div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="color:var(--red)">Ransomware ALPHV</span>
+              <span class="tag tag-red">CRÍTICO</span>
+            </div>
+            <div class="risk-meter"><div class="risk-fill risk-high" style="width:92%"></div></div>
+            <div style="color:var(--muted);font-size:8px">Cifrado AES-256 · Objetivo: bases de datos</div>
+          </div>
+          <div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="color:#ff7800">Emotet v5 Botnet</span>
+              <span class="tag tag-yellow">ALTO</span>
+            </div>
+            <div class="risk-meter"><div class="risk-fill risk-med" style="width:74%"></div></div>
+            <div style="color:var(--muted);font-size:8px">Propagación por email · C2 activo</div>
+          </div>
+          <div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="color:var(--yellow)">CVE-2024-4577</span>
+              <span class="tag tag-yellow">ALTO</span>
+            </div>
+            <div class="risk-meter"><div class="risk-fill risk-med" style="width:68%"></div></div>
+            <div style="color:var(--muted);font-size:8px">RCE PHP · Sin parche aplicado</div>
+          </div>
+          <div style="padding:10px 0">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="color:var(--green)">Log4Shell Legacy</span>
+              <span class="tag tag-green">BAJO</span>
+            </div>
+            <div class="risk-meter"><div class="risk-fill risk-low" style="width:31%"></div></div>
+            <div style="color:var(--muted);font-size:8px">Mitigado · Monitoreo activo</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="panel-simulacion" class="panel">
-      <div class="grid-main">
+    <div class="card" style="margin-top:1.5rem">
+      <div class="card-title"><i class="fas fa-globe"></i>IPs Bloqueadas — Últimas 24h</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;font-family:'Share Tech Mono';font-size:9px">
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">198.51.100.42</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">203.0.113.7</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">192.0.2.188</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">10.255.44.99</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">172.16.88.201</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">45.33.32.156</span>
+        <span style="color:var(--red);padding:3px 8px;border:1px solid rgba(255,0,0,0.3);background:rgba(255,0,0,0.06)">104.21.66.7</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-blockchain" class="panel">
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="stat-card" style="--accent:var(--cyan)">
+        <div class="stat-label">Altura del Bloque</div>
+        <div class="stat-value" style="color:var(--cyan)" id="bc-height">14,892</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--green)">
+        <div class="stat-label">Nodos en Consenso</div>
+        <div class="stat-value" style="color:var(--green)">12/12</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--yellow)">
+        <div class="stat-label">Hash Rate</div>
+        <div class="stat-value" style="color:var(--yellow)">4.2 GH/s</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--red)">
+        <div class="stat-label">TX Pendientes</div>
+        <div class="stat-value" style="color:var(--red)">18</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-cubes"></i>Cadena de Bloques — Últimos 5 Bloques</div>
+        <div class="block-chain" id="block-chain-view">
+          <div class="chain-block">
+            <div class="block-header"><span class="block-num">#14892</span><span class="block-hash">0xA3F9...C221</span></div>
+            <div class="block-data">TX: 42 &nbsp;|&nbsp; Nonce: 7,291,044 &nbsp;|&nbsp; Merkle: 0x9D2A...</div>
+            <div class="block-valid">✓ VALIDADO · CONSENSO 12/12</div>
+          </div>
+          <div class="chain-block">
+            <div class="block-header"><span class="block-num">#14891</span><span class="block-hash">0xBF12...88A0</span></div>
+            <div class="block-data">TX: 37 &nbsp;|&nbsp; Nonce: 6,830,211 &nbsp;|&nbsp; Merkle: 0x4F1B...</div>
+            <div class="block-valid">✓ VALIDADO · CONSENSO 12/12</div>
+          </div>
+          <div class="chain-block">
+            <div class="block-header"><span class="block-num">#14890</span><span class="block-hash">0xE74C...19D8</span></div>
+            <div class="block-data">TX: 51 &nbsp;|&nbsp; Nonce: 5,992,677 &nbsp;|&nbsp; Merkle: 0x7A3C...</div>
+            <div class="block-valid">✓ VALIDADO · CONSENSO 12/12</div>
+          </div>
+          <div class="chain-block">
+            <div class="block-header"><span class="block-num">#14889</span><span class="block-hash">0x2D8B...F033</span></div>
+            <div class="block-data">TX: 29 &nbsp;|&nbsp; Nonce: 4,441,009 &nbsp;|&nbsp; Merkle: 0x1E9F...</div>
+            <div class="block-valid">✓ VALIDADO · CONSENSO 11/12</div>
+          </div>
+          <div class="chain-block">
+            <div class="block-header"><span class="block-num">#14888</span><span class="block-hash">0x91CF...A7E4</span></div>
+            <div class="block-data">TX: 44 &nbsp;|&nbsp; Nonce: 3,781,556 &nbsp;|&nbsp; Merkle: 0xB5D2...</div>
+            <div class="block-valid">✓ VALIDADO · CONSENSO 12/12</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-title"><i class="fas fa-file-contract"></i>Smart Contracts Activos</div>
+          <div style="font-family:'Share Tech Mono';font-size:9px;line-height:2.4;color:var(--muted)">
+            <div>AUTH_IDENTITY_V3 <span class="tag tag-green" style="float:right">ACTIVO</span></div>
+            <div>FRAUD_DETECTOR_V2 <span class="tag tag-green" style="float:right">ACTIVO</span></div>
+            <div>ACCESS_CONTROL_V1 <span class="tag tag-green" style="float:right">ACTIVO</span></div>
+            <div>AUDIT_LOG_V4 <span class="tag tag-blue" style="float:right">EN PAUSA</span></div>
+            <div>VAULT_MANAGER_V2 <span class="tag tag-green" style="float:right">ACTIVO</span></div>
+          </div>
+        </div>
         <div class="card">
-          <div class="card-title">Generador de Escenarios</div>
-          <select class="field-input" id="scenario-type" style="margin-bottom:1rem; width:100%">
-            <option value="phishing">Phishing Bancario</option>
-            <option value="ransomware">Ataque Ransomware</option>
-            <option value="blockchain_attack">Ataque 51% Blockchain</option>
+          <div class="card-title"><i class="fas fa-shield-halved"></i>Impacto del Sistema</div>
+          <div style="font-family:'Share Tech Mono';font-size:9px;line-height:2.6;color:var(--muted)">
+            <div><i class="fas fa-check" style="color:var(--red);margin-right:8px"></i>Reducción de fraude: <span style="color:var(--green)">-89%</span></div>
+            <div><i class="fas fa-check" style="color:var(--red);margin-right:8px"></i>Control usuario: <span style="color:var(--green)">100%</span></div>
+            <div><i class="fas fa-check" style="color:var(--red);margin-right:8px"></i>Inmutabilidad datos: <span style="color:var(--green)">GARANTIZADA</span></div>
+            <div><i class="fas fa-check" style="color:var(--red);margin-right:8px"></i>Trazabilidad TX: <span style="color:var(--green)">COMPLETA</span></div>
+            <div><i class="fas fa-check" style="color:var(--red);margin-right:8px"></i>Tiempo de validación: <span style="color:var(--cyan)">~2.3s</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-simulacion" class="panel">
+    <div class="grid-2">
+      <div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-title"><i class="fas fa-flask"></i>Generador de Escenarios de Amenaza</div>
+          <div class="field-label" style="margin-bottom:6px">Selecciona tipo de simulación</div>
+          <select class="scenario-select" id="scenario-type">
+            <option value="phishing">🎣 Phishing Bancario Avanzado</option>
+            <option value="ransomware">💀 Ataque Ransomware</option>
+            <option value="social">🎭 Ingeniería Social</option>
+            <option value="ddos">💥 Ataque DDoS Distribuido</option>
+            <option value="insider">🕵️ Amenaza Interna (Insider Threat)</option>
+            <option value="supply">⛓️ Ataque a Cadena de Suministro</option>
+            <option value="blockchain_attack">🔗 Ataque 51% Blockchain</option>
           </select>
-          <div class="attack-map" id="attack-map"></div>
-          <button class="btn-primary" id="btn-scenario" onclick="generateScenario()" style="margin-top:0">Simular con IA Local</button>
-        </div>
 
-        <div class="card">
-          <div class="card-title">Asistente Fortaleza IA</div>
-          <div class="chat-area" id="ai-chat">
-            <div class="msg-ai"><div class="msg-label ai">AI</div><div class="msg-text">Módulo offline activo. Pregúntame sobre ciberseguridad o genera una simulación.</div></div>
+          <div class="attack-map" id="attack-map">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono';font-size:10px;color:var(--muted)">
+              Selecciona y genera un escenario para visualizar el mapa de ataque
+            </div>
           </div>
-          <div class="input-row" style="margin-top:1rem">
-            <input type="text" class="chat-input" id="user-msg" placeholder="Escribe un comando...">
-            <button class="btn-send" onclick="sendMsg()">></button>
+
+          <button class="btn-primary" onclick="generateScenario()" id="btn-scenario" style="margin-top:0">
+            <i class="fas fa-bolt" style="margin-right:8px"></i>Generar Simulación con IA
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between">
+          <span><i class="fas fa-brain"></i>Módulo IA — Fortaleza Digital (Local)</span>
+          <button onclick="openApiModal()" style="background:none;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono';font-size:8px;padding:2px 8px;cursor:pointer;letter-spacing:1px">⚙ KEY</button>
+        </div>
+        <div class="chat-area" id="ai-chat">
+          <div class="msg-ai">
+            <div class="msg-label ai">FORTALEZA AI</div>
+            <div class="msg-text ai">Sistema offline inicializado. Nodo 0xBF9D2A listo para recibir comandos técnicos. ¿En qué puedo apoyarte?</div>
           </div>
+        </div>
+        <div class="input-row">
+          <input class="chat-input" id="user-msg" placeholder="Comando sobre blockchain o seguridad..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="btn-send" id="btn-send" onclick="sendMsg()">ENVIAR</button>
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="panel-red" class="panel">
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="stat-card" style="--accent:var(--green)">
+        <div class="stat-label">Nodos Activos</div>
+        <div class="stat-value" style="color:var(--green)">12</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--yellow)">
+        <div class="stat-label">Latencia Prom.</div>
+        <div class="stat-value" style="color:var(--yellow)">24ms</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--cyan)">
+        <div class="stat-label">Ancho de Banda</div>
+        <div class="stat-value" style="color:var(--cyan)">1.2 GB/s</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--red)">
+        <div class="stat-label">Nodos Offline</div>
+        <div class="stat-value" style="color:var(--red)">0</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-server"></i>Estado de Nodos de la Red</div>
+      <div id="node-list" style="font-family:'Share Tech Mono';font-size:10px">
+        </div>
+    </div>
+  </div>
+
+  <div id="panel-reportes" class="panel">
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-chart-pie"></i>Distribución de Amenazas</div>
+        <div style="font-family:'Share Tech Mono';font-size:9px;line-height:2.6;color:var(--muted)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:var(--red);border-radius:50%"></div>
+            Phishing <span style="margin-left:auto;color:var(--red)">36%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:#ff7800;border-radius:50%"></div>
+            Malware <span style="margin-left:auto;color:#ff7800">27%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:var(--yellow);border-radius:50%"></div>
+            DDoS <span style="margin-left:auto;color:var(--yellow)">10%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:var(--cyan);border-radius:50%"></div>
+            SQLi / XSS <span style="margin-left:auto;color:var(--cyan)">15%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:#aa00ff;border-radius:50%"></div>
+            Zero-day <span style="margin-left:auto;color:#aa00ff">8%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;background:var(--green);border-radius:50%"></div>
+            Otros <span style="margin-left:auto;color:var(--green)">4%</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-clock"></i>Actividad — Últimas 24h</div>
+        <div class="bar-chart" style="height:80px">
+          <div class="bar-col"><div class="bar" style="height:30px"></div><div class="bar-lbl">00h</div></div>
+          <div class="bar-col"><div class="bar" style="height:20px"></div><div class="bar-lbl">04h</div></div>
+          <div class="bar-col"><div class="bar" style="height:15px"></div><div class="bar-lbl">08h</div></div>
+          <div class="bar-col"><div class="bar" style="height:60px"></div><div class="bar-lbl">12h</div></div>
+          <div class="bar-col"><div class="bar" style="height:80px"></div><div class="bar-lbl">16h</div></div>
+          <div class="bar-col"><div class="bar" style="height:55px"></div><div class="bar-lbl">20h</div></div>
+          <div class="bar-col"><div class="bar" style="height:45px"></div><div class="bar-lbl">24h</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-trophy"></i>Métricas de Éxito</div>
+        <div style="font-family:'Share Tech Mono';font-size:9px;line-height:2.6;color:var(--muted)">
+          <div>Ataques bloqueados <span style="color:var(--green);float:right">99.1%</span></div>
+          <div>Falsos positivos <span style="color:var(--green);float:right">0.9%</span></div>
+          <div>Tiempo respuesta <span style="color:var(--green);float:right">0.4s</span></div>
+          <div>Uptime sistema <span style="color:var(--green);float:right">99.97%</span></div>
+          <div>Confianza DID <span style="color:var(--green);float:right">100%</span></div>
+          <div>Score seguridad <span style="color:var(--cyan);float:right">A+</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div><div id="api-modal">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-robot" style="color:var(--red);margin-right:8px"></i>API Config</div>
+    <div class="modal-sub">
+      Módulo local activo. No se requiere API Key para simulaciones básicas.
+    </div>
+    <div class="field-label">API Key (Opcional)</div>
+    <input type="password" class="field-input" id="api-key-input" placeholder="sk-ant-...">
+    <button class="btn-primary" onclick="closeApiModal()" style="margin-top:1rem">Cerrar</button>
   </div>
 </div>
 
 <script>
-// --- MATRIX BG ---
+// --- MOTOR DE IA LOCAL (OFFLINE) ---
+const FortalezaLogica = {
+    ia: {
+        "blockchain": "La red de Fortaleza Digital utiliza algoritmos PoA (Proof of Authority). Actualmente hay 12 validadores autorizados garantizando la inmutabilidad de los bloques en el Nodo Monterrey.",
+        "ataque": "He detectado un aumento en intentos de inyección SQL en el puerto 443. El Firewall Layer 7 ha bloqueado 14 IPs de origen desconocido automáticamente.",
+        "hola": "Operador Edgar Nájera, sistema autenticado. Todos los módulos de seguridad están en nivel óptimo. Esperando instrucciones.",
+        "ayuda": "Protocolos disponibles para consulta: 'blockchain', 'ataque', 'nodos', 'estatus'.",
+        "default": "Analizando base de datos local... No se detectan anomalías críticas en el ledger. El consenso de red es del 100%."
+    },
+    escenarios: {
+        phishing: "🚨 SIMULACIÓN: Ataque vía email corporativo detectado. Los atacantes intentan exfiltrar llaves privadas del Ledger. Solución: Despliegue de autenticación multifactor (MFA) preventivo.",
+        ransomware: "💀 SIMULACIÓN: Cifrado de archivos .db en curso. Vector: Vulnerabilidad RCE en servidor legado. Solución: Aislamiento de red automático y restauración desde backup inmutable.",
+        social: "🎭 SIMULACIÓN: Ingeniería Social detectada. Atacante suplantando a soporte técnico nivel 1. Acción: Sesión del usuario revocada y alerta enviada a SOC.",
+        ddos: "💥 SIMULACIÓN: Ataque DDoS masivo (40Gbps) contra Nodo-01. Acción: Activación de mitigación en el borde y re-enrutamiento de tráfico vía Anycast.",
+        insider: "🕵️ SIMULACIÓN: Amenaza interna. Usuario con privilegios elevados descargando la base de datos de transacciones. Acción: Acceso bloqueado y auditoría iniciada.",
+        supply: "⛓️ SIMULACIÓN: Compromiso de cadena de suministro. Dependencia de software maliciosa detectada en build #452. Acción: Firma de código invalidada.",
+        blockchain_attack: "🔗 SIMULACIÓN: Intento de ataque del 51%. El sistema detecta discrepancia de Merkle Root y procede a suspender el Nodo Peer malicioso del consenso."
+    }
+};
+
+// ── MATRIX BG ────────────────────────────────────────────────────
 const canvas = document.getElementById('matrix-bg');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-const drops = Array(Math.floor(canvas.width/20)).fill(1);
+function resizeCanvas() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+const cols = Math.floor(canvas.width/20);
+const drops = Array(cols).fill(1);
+const chars = '01アイウエオカキクケコABCDEF0123456789';
 function drawMatrix() {
-  ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = '#ff0000'; ctx.font = '15px monospace';
-  drops.forEach((y, i) => {
-    ctx.fillText(Math.floor(Math.random()*2), i*20, y*20);
-    if(y*20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+  ctx.fillStyle='rgba(4,4,4,0.05)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#ff0000'; ctx.font='14px Share Tech Mono';
+  drops.forEach((y,i) => {
+    ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*20, y*20);
+    if (y*20 > canvas.height && Math.random() > 0.975) drops[i]=0;
     drops[i]++;
   });
 }
-setInterval(drawMatrix, 50);
+setInterval(drawMatrix, 60);
 
-// --- LÓGICA DE LOGIN ---
+// ── LOGIN / LOGOUT ───────────────────────────────────────────────
 function doLogin() {
-  if(document.getElementById('did-input').value === '1234') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    startTerminal();
+  const v = document.getElementById('did-input').value;
+  if (v === '1234') {
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main-app').style.display='block';
+    startLiveFeed(); buildNodeList(); startBlockchainSim();
+  } else {
+    document.getElementById('did-input').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('did-input').style.borderColor='',1200);
   }
 }
+function doLogout() { location.reload(); }
 
+// ── TABS ─────────────────────────────────────────────────────────
 function switchTab(id, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('panel-'+id).classList.add('active');
 }
 
-// --- IA LOCAL (SIN API) ---
-const FortalezaIA = {
-  respuestas: [
-    { key: 'blockchain', text: 'La blockchain de Fortaleza Digital usa un consenso PoA (Proof of Authority) para evitar ataques de spam y asegurar transacciones en < 2s.' },
-    { key: 'ataque', text: 'He detectado intentos de fuerza bruta en el puerto 22. Recomiendo cambiar a autenticación por llaves SSH y activar Fail2Ban.' },
-    { key: 'phishing', text: 'El phishing moderno usa ingeniería social avanzada. Siempre verifica el registro SPF y DKIM de los correos entrantes.' },
-    { key: 'hola', text: 'Sistema operativo listo. Esperando comandos de seguridad.' }
-  ],
-  escenarios: {
-    phishing: "🚨 SIMULACIÓN: Los usuarios reciben emails falsos. El atacante ha clonado el portal de acceso. Solución: Activar 2FA mediante hardware.",
-    ransomware: "💀 SIMULACIÓN: Archivos .db cifrados. Vector: Vulnerabilidad en plugin desactualizado. Solución: Aislar segmento de red y restaurar backup.",
-    blockchain_attack: "🔗 SIMULACIÓN: Intento de doble gasto detectado. La red ha rechazado el bloque malicioso por falta de firmas autorizadas."
-  }
-};
-
-function appendMsg(role, text) {
-  const chat = document.getElementById('ai-chat');
-  const div = document.createElement('div');
-  div.className = 'msg-ai';
-  div.innerHTML = `<div class="msg-label ${role}">${role.toUpperCase()}</div><div class="msg-text">${text}</div>`;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function sendMsg() {
-  const inp = document.getElementById('user-msg');
-  const val = inp.value.toLowerCase();
-  if(!val) return;
+// ── LIVE THREAT FEED ─────────────────────────────────────────────
+const threats = [
+  ['CRÍTICO','badge-crit','Inyección NoSQL detectada','185.220.101.44'],
+  ['ALTO','badge-high','Escaneo de vulnerabilidades','198.51.100.7'],
+  ['MEDIO','badge-med','Certificado TLS inválido','10.0.0.88'],
+  ['BAJO','badge-low','Login fallido repetido','172.16.0.12'],
+  ['CRÍTICO','badge-crit','Exfiltración de datos detectada','45.33.32.99'],
+  ['ALTO','badge-high','C2 Beacon detectado','203.0.113.42'],
+  ['MEDIO','badge-med','Anomalía en tráfico DNS','192.168.1.200'],
+];
+let threatIdx=0;
+function startLiveFeed() {
+  setInterval(() => {
+    const feed = document.getElementById('threat-feed');
+    const t = threats[threatIdx++ % threats.length];
+    const div = document.createElement('div');
+    div.className='threat-item';
+    div.innerHTML=`<span class="threat-badge ${t[1]}">${t[0]}</span><span class="threat-desc">${t[2]} — ${t[3]}</span><span class="threat-time">LIVE</span>`;
+    div.style.opacity='0'; div.style.transition='opacity 0.4s';
+    if(feed) {
+        feed.insertBefore(div, feed.firstChild);
+        setTimeout(()=>div.style.opacity='1',50);
+        if(feed.children.length>8) feed.removeChild(feed.lastChild);
+    }
+    const el=document.getElementById('s-threats');
+    if(el) el.textContent=parseInt(el.textContent.replace(',',''))+1;
+  }, 3500);
   
-  appendMsg('user', val);
-  inp.value = '';
-
-  setTimeout(() => {
-    const res = FortalezaIA.respuestas.find(r => val.includes(r.key));
-    appendMsg('ai', res ? res.text : "Comando no reconocido. Consulta 'blockchain' o 'ataque' para más información.");
-  }, 500);
+  let ti=0;
+  setInterval(()=>{
+    const term=document.getElementById('sys-terminal');
+    if(!term) return;
+    const l = [['cmd','threat.monitor --ip 198.51.100.7'],['out','✓ IP flagged — Añadida a blocklist'],['cmd','blockchain.verify --block 14892']][ti++%3];
+    const d=document.createElement('div');
+    d.className='term-line';
+    d.innerHTML = l[0]==='cmd' ? `<span class="term-prompt">FD&gt;</span><span class="term-cmd">${l[1]}</span>` : `<span class="term-out">${l[1]}</span>`;
+    term.appendChild(d);
+    term.scrollTop=term.scrollHeight;
+    if(term.children.length>30) term.removeChild(term.firstChild);
+  }, 2500);
 }
+
+// ── BLOCKCHAIN SIM ───────────────────────────────────────────────
+function startBlockchainSim() {
+  let h=14892;
+  setInterval(()=>{
+    h++;
+    const bh=document.getElementById('bc-height');
+    const sb=document.getElementById('s-blocks');
+    if(bh) bh.textContent=h.toLocaleString();
+    if(sb) sb.textContent=h.toLocaleString();
+    const chain=document.getElementById('block-chain-view');
+    if(chain) {
+        const hex=()=>Math.floor(Math.random()*16).toString(16).toUpperCase();
+        const hash='0x'+Array(4).fill(0).map(()=>hex()+hex()+hex()+hex()).join('').substring(0,8)+'...';
+        const div=document.createElement('div');
+        div.className='chain-block'; div.style.opacity='0'; div.style.transition='opacity 0.5s';
+        div.innerHTML=`<div class="block-header"><span class="block-num">#${h}</span><span class="block-hash">${hash}</span></div><div class="block-data">TX: ${Math.floor(Math.random()*40+20)} &nbsp;|&nbsp; Nonce: ${Math.floor(Math.random()*9000000+1000000)}</div><div class="block-valid">✓ VALIDADO</div>`;
+        chain.insertBefore(div,chain.firstChild);
+        setTimeout(()=>div.style.opacity='1',50);
+        if(chain.children.length>6) chain.removeChild(chain.lastChild);
+    }
+  }, 5000);
+}
+
+// ── NODES ────────────────────────────────────────────────────────
+function buildNodeList() {
+  const nodes=[{id:'NODE-01',ip:'10.0.1.10',role:'Validador',lat:'12ms'},{id:'NODE-02',ip:'10.0.1.11',role:'Relay',lat:'18ms'}];
+  const container=document.getElementById('node-list');
+  if(container) {
+    container.innerHTML=nodes.map(n=>`<div style="display:grid;grid-template-columns:90px 1fr 1fr 80px;padding:10px 0;border-bottom:1px solid #222"><span>${n.id}</span><span>${n.ip}</span><span>${n.role}</span><span style="color:var(--green)">● ONLINE</span></div>`).join('');
+  }
+}
+
+// ── ATTACK MAP ───────────────────────────────────────────────────
+function buildAttackMap(type) {
+  const map = document.getElementById('attack-map');
+  if(!map) return;
+  map.innerHTML='';
+  for(let i=0; i<5; i++) {
+    const n = document.createElement('div');
+    n.className = 'attack-node';
+    n.style.left = Math.random()*90+'%'; n.style.top = Math.random()*80+'%';
+    map.appendChild(n);
+  }
+}
+
+// ── AI LOCAL FUNCTIONS ──────────────────────────────────────────
+function appendMsg(role, text) {
+  const chat=document.getElementById('ai-chat');
+  if(!chat) return;
+  const d=document.createElement('div'); d.className='msg-ai';
+  d.innerHTML=`<div class="msg-label ${role}">${role==='ai'?'FORTALEZA AI':'TÚ'}</div><div class="msg-text ${role}">${text.replace(/\n/g,'<br>')}</div>`;
+  chat.appendChild(d); chat.scrollTop=chat.scrollHeight;
+}
+
+function openApiModal() { document.getElementById('api-modal').classList.add('show'); }
+function closeApiModal() { document.getElementById('api-modal').classList.remove('show'); }
 
 function generateScenario() {
-  const type = document.getElementById('scenario-type').value;
-  const btn = document.getElementById('btn-scenario');
-  btn.disabled = true;
-  
-  appendMsg('user', `Iniciando análisis de: ${type}`);
+  const type=document.getElementById('scenario-type').value;
   buildAttackMap(type);
-
+  appendMsg('user', `Iniciando simulación: ${type}`);
   setTimeout(() => {
-    appendMsg('ai', FortalezaIA.escenarios[type]);
-    btn.disabled = false;
+    appendMsg('ai', FortalezaLogica.escenarios[type] || "Escenario completado.");
   }, 1000);
 }
 
-function startTerminal() {
-  const term = document.getElementById('sys-terminal');
-  const msgs = ["Cargando módulos...", "Blockchain: OK", "IDS: Activo", "Escaneando puertos...", "Vulnerabilidades: 0"];
-  let i = 0;
-  setInterval(() => {
-    const line = document.createElement('div');
-    line.innerHTML = `<span style="color:var(--red)">></span> ${msgs[i++ % msgs.length]}`;
-    term.appendChild(line);
-    term.scrollTop = term.scrollHeight;
-    if(term.childNodes.length > 10) term.removeChild(term.firstChild);
-  }, 2000);
-}
-
-function buildAttackMap(type) {
-  const map = document.getElementById('attack-map');
-  map.innerHTML = '<div style="color:var(--muted); font-size:9px; padding:10px">MAPA DINÁMICO GENERADO</div>';
-  const colors = { phishing: '#00d4ff', ransomware: '#ff0000', blockchain_attack: '#00ff88' };
-  
-  for(let i=0; i<3; i++) {
-    const node = document.createElement('div');
-    node.className = 'attack-node';
-    node.style.left = (20 + i*30) + '%';
-    node.style.top = (30 + Math.random()*40) + '%';
-    node.style.borderColor = colors[type];
-    map.appendChild(node);
-  }
+function sendMsg() {
+  const inp=document.getElementById('user-msg');
+  const val=inp.value.toLowerCase().trim();
+  if(!val) return;
+  appendMsg('user', inp.value);
+  inp.value='';
+  setTimeout(() => {
+    let r = FortalezaLogica.ia["default"];
+    if(val.includes("blockchain")) r = FortalezaLogica.ia["blockchain"];
+    else if(val.includes("ataque")) r = FortalezaLogica.ia["ataque"];
+    else if(val.includes("hola")) r = FortalezaLogica.ia["hola"];
+    appendMsg('ai', r);
+  }, 600);
 }
 </script>
 </body>

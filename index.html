@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortaleza Digital | Ciberseguridad & Blockchain</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --red: #ff0000;
+  --red-dark: #8b0000;
+  --red-dim: rgba(255,0,0,0.12);
+  --bg: #040404;
+  --bg2: #0a0a0a;
+  --bg3: #111;
+  --border: rgba(255,0,0,0.18);
+  --text: #e8e8e8;
+  --muted: #555;
+  --green: #00ff88;
+  --yellow: #ffcc00;
+  --cyan: #00d4ff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* SCANLINE OVERLAY */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:9999; pointer-events:none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+  animation: scanMove 8s linear infinite;
+}
+@keyframes scanMove { from{background-position:0 0} to{background-position:0 100px} }
+
+/* GRID BG */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,0,0,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+#matrix-bg { position:fixed; inset:0; z-index:1; opacity:0.06; pointer-events:none; }
+#app { position:relative; z-index:2; }
+
+/* LOGIN */
+#login-screen {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:2rem;
+}
+
+.login-box {
+  width:100%; max-width:440px;
+  background: rgba(8,8,8,0.96);
+  border:1px solid var(--border);
+  border-top: 2px solid var(--red);
+  padding:3rem 2.5rem;
+  position:relative;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+.logo-circle {
+  width:80px; height:80px; border-radius:50%;
+  border:2px solid var(--red);
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 1.5rem;
+  box-shadow: 0 0 30px rgba(255,0,0,0.4);
+}
+
+.login-title { font-family:'Orbitron'; font-size:1.4rem; font-weight:900; text-align:center; letter-spacing:4px; margin-bottom:0.3rem; text-transform:uppercase; }
+.login-sub { font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); text-align:center; letter-spacing:3px; margin-bottom:2rem; }
+
+.field-label { font-family:'Share Tech Mono'; font-size:9px; color:var(--red); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
+.field-input {
+  width:100%; background:rgba(255,0,0,0.04); border:1px solid rgba(255,0,0,0.2);
+  color:var(--text); font-family:'Share Tech Mono'; font-size:13px;
+  padding:12px 16px; outline:none;
+}
+
+.btn-primary {
+  width:100%; padding:14px;
+  background: linear-gradient(135deg, var(--red-dark), var(--red));
+  color:#fff; font-family:'Orbitron'; font-size:11px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase; border:none; cursor:pointer;
+  margin-top:1.5rem;
+}
+
+/* MAIN APP */
+#main-app { display:none; }
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(4,4,4,0.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:60px;
+}
+.nav-brand { font-family:'Orbitron'; font-size:1rem; font-weight:900; letter-spacing:3px; }
+.nav-brand span { color:var(--red); }
+.nav-status { font-family:'Share Tech Mono'; font-size:10px; color:var(--green); display:flex; align-items:center; gap:6px; }
+
+.tabs { display:flex; background:var(--bg2); border-bottom:1px solid var(--border); padding:0 2rem; overflow-x:auto; }
+.tab { padding:14px 20px; cursor:pointer; font-family:'Share Tech Mono'; font-size:10px; color:var(--muted); text-transform:uppercase; border-bottom:2px solid transparent; }
+.tab.active { color:var(--red); border-bottom-color:var(--red); }
+
+.panel { display:none; padding:2rem; }
+.panel.active { display:block; }
+
+.card { background:var(--bg2); border:1px solid var(--border); padding:1.5rem; margin-bottom:1.5rem; position:relative; }
+.card-title { font-family:'Share Tech Mono'; font-size:9px; color:var(--red); letter-spacing:3px; text-transform:uppercase; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+.grid-main { display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; }
+
+.stat-card { background:var(--bg2); border:1px solid var(--border); padding:1.2rem; border-bottom:2px solid var(--red); }
+.stat-label { font-family:'Share Tech Mono'; font-size:9px; color:var(--muted); }
+.stat-value { font-family:'Orbitron'; font-size:1.5rem; color:var(--text); }
+
+/* TERMINAL & CHAT */
+.terminal, .chat-area {
+  background:#000; border:1px solid rgba(0,255,136,0.2);
+  padding:1rem; font-family:'Share Tech Mono'; font-size:11px;
+  height:200px; overflow-y:auto; color:var(--green);
+}
+.chat-area { height:260px; border-color:var(--border); color:var(--text); font-family:'Rajdhani'; }
+
+.msg-ai { margin-bottom:12px; }
+.msg-label { font-size:8px; font-family:'Share Tech Mono'; margin-bottom:4px; }
+.msg-label.ai { color:var(--red); }
+.msg-label.user { color:var(--cyan); }
+.msg-text { padding:8px; border-left:2px solid var(--red); background:rgba(255,0,0,0.05); }
+
+.input-row { display:flex; gap:8px; }
+.chat-input { flex:1; background:#111; border:1px solid var(--border); color:#fff; padding:10px; font-family:'Share Tech Mono'; }
+.btn-send { background:var(--red); border:none; color:#fff; padding:0 20px; cursor:pointer; font-family:'Share Tech Mono'; }
+
+/* ATTACK MAP */
+.attack-map { background:#000; height:180px; position:relative; border:1px solid var(--border); overflow:hidden; margin-bottom:1rem; }
+.attack-node { position:absolute; width:10px; height:10px; border-radius:50%; border:2px solid var(--red); }
+.attack-line { position:absolute; height:1px; transform-origin:left center; }
+.map-label { position:absolute; font-family:'Share Tech Mono'; font-size:8px; }
+
+</style>
+</head>
+<body>
+
+<canvas id="matrix-bg"></canvas>
+
+<div id="app">
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="logo-circle"><i class="fas fa-shield-halved" style="color:var(--red);font-size:2rem;"></i></div>
+      <div class="login-title">Fortaleza <span style="color:var(--red)">Digital</span></div>
+      <div class="login-sub">SISTEMA OPERATIVO DE CIBERSEGURIDAD</div>
+      <input type="text" class="field-input" id="did-input" placeholder="Ingresa 1234">
+      <button class="btn-primary" onclick="doLogin()">Acceder al Nodo</button>
+    </div>
+  </div>
+
+  <div id="main-app">
+    <nav>
+      <div class="nav-brand">FORTALEZA <span>DIGITAL</span></div>
+      <div class="nav-status"><i class="fas fa-circle" style="font-size:6px"></i> NODO ACTIVO: 0xBF9D2A</div>
+      <button class="nav-btn" onclick="location.reload()" style="background:none;border:1px solid var(--border);color:var(--muted);padding:4px 10px;cursor:pointer">LOGOUT</button>
+    </nav>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('dashboard',this)">Dashboard</div>
+      <div class="tab" onclick="switchTab('simulacion',this)">Simulación IA</div>
+    </div>
+
+    <div id="panel-dashboard" class="panel active">
+      <div class="grid-4" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-label">Amenazas</div><div class="stat-value" id="s-threats">247</div></div>
+        <div class="stat-card"><div class="stat-label">Bloques</div><div class="stat-value">14,892</div></div>
+        <div class="stat-card" style="border-color:var(--yellow)"><div class="stat-label">Riesgo</div><div class="stat-value" style="color:var(--yellow)">73%</div></div>
+        <div class="stat-card" style="border-color:var(--cyan)"><div class="stat-label">Uptime</div><div class="stat-value" style="color:var(--cyan)">99.9%</div></div>
+      </div>
+
+      <div class="grid-main">
+        <div class="card">
+          <div class="card-title">Terminal de Eventos</div>
+          <div class="terminal" id="sys-terminal"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Estado de Red</div>
+          <div style="font-family:'Share Tech Mono'; font-size:11px; line-height:2">
+            Blockchain: <span style="color:var(--green)">Online</span><br>
+            Nodos: 12 activos<br>
+            Latencia: 24ms<br>
+            Encriptación: AES-256
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-simulacion" class="panel">
+      <div class="grid-main">
+        <div class="card">
+          <div class="card-title">Generador de Escenarios</div>
+          <select class="field-input" id="scenario-type" style="margin-bottom:1rem; width:100%">
+            <option value="phishing">Phishing Bancario</option>
+            <option value="ransomware">Ataque Ransomware</option>
+            <option value="blockchain_attack">Ataque 51% Blockchain</option>
+          </select>
+          <div class="attack-map" id="attack-map"></div>
+          <button class="btn-primary" id="btn-scenario" onclick="generateScenario()" style="margin-top:0">Simular con IA Local</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Asistente Fortaleza IA</div>
+          <div class="chat-area" id="ai-chat">
+            <div class="msg-ai"><div class="msg-label ai">AI</div><div class="msg-text">Módulo offline activo. Pregúntame sobre ciberseguridad o genera una simulación.</div></div>
+          </div>
+          <div class="input-row" style="margin-top:1rem">
+            <input type="text" class="chat-input" id="user-msg" placeholder="Escribe un comando...">
+            <button class="btn-send" onclick="sendMsg()">></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- MATRIX BG ---
+const canvas = document.getElementById('matrix-bg');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+const drops = Array(Math.floor(canvas.width/20)).fill(1);
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#ff0000'; ctx.font = '15px monospace';
+  drops.forEach((y, i) => {
+    ctx.fillText(Math.floor(Math.random()*2), i*20, y*20);
+    if(y*20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 50);
+
+// --- LÓGICA DE LOGIN ---
+function doLogin() {
+  if(document.getElementById('did-input').value === '1234') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    startTerminal();
+  }
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+// --- IA LOCAL (SIN API) ---
+const FortalezaIA = {
+  respuestas: [
+    { key: 'blockchain', text: 'La blockchain de Fortaleza Digital usa un consenso PoA (Proof of Authority) para evitar ataques de spam y asegurar transacciones en < 2s.' },
+    { key: 'ataque', text: 'He detectado intentos de fuerza bruta en el puerto 22. Recomiendo cambiar a autenticación por llaves SSH y activar Fail2Ban.' },
+    { key: 'phishing', text: 'El phishing moderno usa ingeniería social avanzada. Siempre verifica el registro SPF y DKIM de los correos entrantes.' },
+    { key: 'hola', text: 'Sistema operativo listo. Esperando comandos de seguridad.' }
+  ],
+  escenarios: {
+    phishing: "🚨 SIMULACIÓN: Los usuarios reciben emails falsos. El atacante ha clonado el portal de acceso. Solución: Activar 2FA mediante hardware.",
+    ransomware: "💀 SIMULACIÓN: Archivos .db cifrados. Vector: Vulnerabilidad en plugin desactualizado. Solución: Aislar segmento de red y restaurar backup.",
+    blockchain_attack: "🔗 SIMULACIÓN: Intento de doble gasto detectado. La red ha rechazado el bloque malicioso por falta de firmas autorizadas."
+  }
+};
+
+function appendMsg(role, text) {
+  const chat = document.getElementById('ai-chat');
+  const div = document.createElement('div');
+  div.className = 'msg-ai';
+  div.innerHTML = `<div class="msg-label ${role}">${role.toUpperCase()}</div><div class="msg-text">${text}</div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMsg() {
+  const inp = document.getElementById('user-msg');
+  const val = inp.value.toLowerCase();
+  if(!val) return;
+  
+  appendMsg('user', val);
+  inp.value = '';
+
+  setTimeout(() => {
+    const res = FortalezaIA.respuestas.find(r => val.includes(r.key));
+    appendMsg('ai', res ? res.text : "Comando no reconocido. Consulta 'blockchain' o 'ataque' para más información.");
+  }, 500);
+}
+
+function generateScenario() {
+  const type = document.getElementById('scenario-type').value;
+  const btn = document.getElementById('btn-scenario');
+  btn.disabled = true;
+  
+  appendMsg('user', `Iniciando análisis de: ${type}`);
+  buildAttackMap(type);
+
+  setTimeout(() => {
+    appendMsg('ai', FortalezaIA.escenarios[type]);
+    btn.disabled = false;
+  }, 1000);
+}
+
+function startTerminal() {
+  const term = document.getElementById('sys-terminal');
+  const msgs = ["Cargando módulos...", "Blockchain: OK", "IDS: Activo", "Escaneando puertos...", "Vulnerabilidades: 0"];
+  let i = 0;
+  setInterval(() => {
+    const line = document.createElement('div');
+    line.innerHTML = `<span style="color:var(--red)">></span> ${msgs[i++ % msgs.length]}`;
+    term.appendChild(line);
+    term.scrollTop = term.scrollHeight;
+    if(term.childNodes.length > 10) term.removeChild(term.firstChild);
+  }, 2000);
+}
+
+function buildAttackMap(type) {
+  const map = document.getElementById('attack-map');
+  map.innerHTML = '<div style="color:var(--muted); font-size:9px; padding:10px">MAPA DINÁMICO GENERADO</div>';
+  const colors = { phishing: '#00d4ff', ransomware: '#ff0000', blockchain_attack: '#00ff88' };
+  
+  for(let i=0; i<3; i++) {
+    const node = document.createElement('div');
+    node.className = 'attack-node';
+    node.style.left = (20 + i*30) + '%';
+    node.style.top = (30 + Math.random()*40) + '%';
+    node.style.borderColor = colors[type];
+    map.appendChild(node);
+  }
+}
+</script>
+</body>
+</html>
